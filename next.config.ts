@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   output: "export",
-  basePath: "/biankiislic",
-  assetPrefix: "/biankiislic/",
+  basePath: "/jvieir96/biankiislic",
+  assetPrefix: "/jvieir96/biankiislic/",
   images: {
     unoptimized: true
   }
