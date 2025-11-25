@@ -1,0 +1,523 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.backButton {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid rgba(107, 141, 214, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.arrow {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #6b8dd6;
+  display: block;
+  line-height: 1;
+  position: relative;
+  top: -8px;
+}
+
+.backButton:hover {
+  transform: translateX(-5px) scale(1.1);
+  box-shadow: 0 8px 20px rgba(107, 141, 214, 0.4);
+  background: linear-gradient(135deg, rgba(107, 141, 214, 0.2), rgba(149, 117, 205, 0.2));
+  border-color: #6b8dd6;
+}
+
+.backButton:active {
+  transform: translateX(0) scale(1);
+}
+
+.gameWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 700px;
+  width: 100%;
+}
+
+.title {
+  font-family: 'Titan One', cursive;
+  font-size: 2.5rem;
+  text-align: center;
+  letter-spacing: 0.15rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #6c5ce7, #00b894, #4a90e2, #6c5ce7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 100%;
+  animation: rainbow 3s linear infinite;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.statsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 2.5rem;
+}
+
+.statBox {
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid var(--accent-primary);
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.statBox h3 {
+  font-family: 'Titan One', cursive;
+  font-size: 0.8rem;
+  color: var(--accent-secondary);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.05rem;
+}
+
+.statValue {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.iconButton {
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid rgba(107, 141, 214, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.iconButton:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 8px 20px rgba(107, 141, 214, 0.4);
+  background: linear-gradient(135deg, rgba(107, 141, 214, 0.2), rgba(149, 117, 205, 0.2));
+  border-color: #6b8dd6;
+}
+
+.iconButton:active {
+  transform: translateY(0) scale(1);
+}
+
+.gameArea {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1100px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.poolContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 0 0 auto;
+  width: 450px;
+  margin-top: 0;
+}
+
+.poolTitle {
+  font-family: 'Titan One', cursive;
+  font-size: 1rem;
+  color: var(--foreground);
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.05rem;
+}
+
+.pool {
+  background: rgba(255, 255, 255, 0.95);
+  border: 4px solid var(--accent-secondary);
+  border-radius: 15px;
+  padding: 20px;
+  height: 470px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: max-content;
+  gap: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.poolPiece {
+  width: 100%;
+  aspect-ratio: 1;
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  cursor: grab;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--accent-secondary);
+}
+
+.poolPiece:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 184, 148, 0.5);
+}
+
+.poolPiece:active {
+  cursor: grabbing;
+}
+
+.poolPiece.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.puzzleContainer {
+  position: relative;
+  flex: 0 0 auto;
+  margin-top: 2.5rem;
+}
+
+.puzzleGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 5px solid var(--accent-primary);
+  border-radius: 15px;
+  padding: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 450px;
+  height: 450px;
+}
+
+.puzzleSlot {
+  position: relative;
+  background: rgba(108, 92, 231, 0.1);
+  border: 2px dashed rgba(108, 92, 231, 0.3);
+  border-radius: 8px;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.puzzlePiece {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  cursor: grab;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.puzzlePiece:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
+  z-index: 10;
+}
+
+.puzzlePiece:active {
+  cursor: grabbing;
+}
+
+.puzzlePiece.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.winOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  z-index: 100;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.winBox {
+  background: linear-gradient(135deg, #6c5ce7, #00b894);
+  border: 5px solid var(--accent-primary);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.winBox h2 {
+  font-family: 'Titan One', cursive;
+  font-size: 2rem;
+  color: white;
+  margin: 0;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+}
+
+.finalScore {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-tertiary);
+  margin: 0;
+}
+
+.button {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  border: 3px solid white;
+  background: white;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.4);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.previewOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+.previewBox {
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: slideIn 0.3s ease;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  border: 4px solid white;
+}
+
+.controls {
+  font-family: 'Baloo 2', cursive;
+  text-align: center;
+  color: var(--accent-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.controls p {
+  margin: 0.3rem 0;
+  letter-spacing: 0.05rem;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .gameArea {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .poolContainer {
+    flex: 1;
+    width: 100%;
+  }
+
+  .pool {
+    min-height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+
+  .poolPiece {
+    width: calc(33.333% - 7px);
+    aspect-ratio: 1;
+  }
+
+  .puzzleContainer {
+    flex: 1;
+  }
+
+  .puzzleGrid {
+    gap: 3px;
+    padding: 8px;
+    width: 400px;
+    height: 400px;
+  }
+
+  .statBox {
+    padding: 0.4rem 1rem;
+  }
+
+  .statBox h3 {
+    font-size: 0.7rem;
+  }
+
+  .statValue {
+    font-size: 1.2rem;
+  }
+
+  .shuffleButton {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .controls {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .gameArea {
+    flex-direction: column;
+  }
+
+  .pool {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .poolPiece {
+    width: calc(33.333% - 5px);
+  }
+
+  .puzzleContainer {
+    flex: 1;
+  }
+
+  .puzzleGrid {
+    gap: 2px;
+    padding: 6px;
+    border: 4px solid var(--accent-primary);
+    width: 320px;
+    height: 320px;
+  }
+
+  .statsContainer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .statBox {
+    padding: 0.3rem 0.8rem;
+  }
+
+  .statBox h3 {
+    font-size: 0.65rem;
+  }
+
+  .statValue {
+    font-size: 1rem;
+  }
+
+  .shuffleButton {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .winBox h2 {
+    font-size: 1.5rem;
+  }
+
+  .finalScore {
+    font-size: 1.2rem;
+  }
+
+  .button {
+    font-size: 0.9rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .controls {
+    font-size: 0.7rem;
+  }
+}

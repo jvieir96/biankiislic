@@ -1,0 +1,504 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.gameWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 900px;
+  width: 100%;
+}
+
+.gameArea {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+}
+
+.title {
+  font-family: 'Titan One', cursive;
+  font-size: 2.5rem;
+  text-align: center;
+  letter-spacing: 0.15rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #6c5ce7, #00b894, #4a90e2, #6c5ce7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 100%;
+  animation: rainbow 3s linear infinite;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.scoreBox {
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid var(--accent-primary);
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  grid-column: 3;
+  justify-self: start;
+  align-self: start;
+  margin-top: 2rem;
+}
+
+.scoreBox h3 {
+  font-family: 'Titan One', cursive;
+  font-size: 0.8rem;
+  color: var(--accent-secondary);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.05rem;
+}
+
+.scoreValue {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.gameCanvas {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  background: linear-gradient(to bottom, #2c3e50 0%, #34495e 50%, #405060 65%, #3d5a3d 70%, #5d4e37 85%, #4a3f2f 100%);
+  border: 5px solid #333;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  grid-column: 2;
+}
+
+.gameCanvas::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to bottom,
+    rgba(93, 78, 55, 0) 0%,
+    rgba(93, 78, 55, 0.3) 20%,
+    rgba(74, 63, 47, 0.6) 50%,
+    rgba(62, 51, 38, 0.9) 80%,
+    rgba(50, 40, 30, 1) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 1.5s ease;
+}
+
+.gameCanvas.sunny {
+  background: linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 40%, #E0F6FF 70%, #90EE90 85%, #7CB342 100%);
+  transition: background 1.5s ease;
+}
+
+.gameCanvas.sunny::after {
+  opacity: 0;
+}
+
+.rain {
+  position: absolute;
+  width: 2px;
+  height: 15px;
+  background: rgba(174, 194, 224, 0.6);
+  animation: fall 0.6s linear infinite;
+  z-index: 5;
+  will-change: transform;
+  pointer-events: none;
+  transform: translateZ(0);
+  border-radius: 50%;
+}
+
+@keyframes fall {
+  from {
+    transform: translate3d(0, -30px, 0);
+  }
+  to {
+    transform: translate3d(100px, 600px, 0);
+  }
+}
+
+.lightning {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.lightning.flash {
+  animation: lightningFlash 0.3s ease-out;
+}
+
+@keyframes lightningFlash {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.bird {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  font-size: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: transform 0.1s;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.birdImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.pipe {
+  position: absolute;
+  width: 60px;
+  background: linear-gradient(to right, #2ecc71, #27ae60);
+  border: 3px solid #229954;
+  border-radius: 5px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.startOverlay,
+.gameOverOverlay,
+.winOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.startBox,
+.gameOverBox,
+.winBox {
+  background: linear-gradient(135deg, #6c5ce7, #00b894);
+  border: 5px solid var(--accent-primary);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.4s ease;
+}
+
+.startImage {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 4px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.sadImage {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 4px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.startBox h2,
+.gameOverBox h2,
+.winBox h2 {
+  font-family: 'Titan One', cursive;
+  font-size: 2rem;
+  color: white;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+}
+
+.house {
+  position: absolute;
+  font-size: 7.5rem;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  animation: bounce 1s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.winMessage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #6c5ce7, #00b894);
+  border: 4px solid var(--accent-primary);
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  text-align: center;
+  z-index: 200;
+  animation: slideIn 0.4s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.winMessage h2 {
+  font-family: 'Titan One', cursive;
+  font-size: 2rem;
+  color: white;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.1rem;
+}
+
+.winMessage p {
+  font-family: 'Baloo 2', cursive;
+  color: white;
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.finalScore {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-tertiary);
+  margin: 1rem 0;
+}
+
+.instruction {
+  font-family: 'Baloo 2', cursive;
+  font-size: 0.9rem;
+  color: white;
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+.controls {
+  font-family: 'Baloo 2', cursive;
+  text-align: center;
+  color: var(--accent-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.controls p {
+  margin: 0.3rem 0;
+  letter-spacing: 0.05rem;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .gameArea {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .gameCanvas {
+    width: 650px;
+    height: 500px;
+    grid-column: unset;
+  }
+
+  .rain {
+    height: 15px;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(500px);
+    }
+  }
+
+  .scoreBox {
+    grid-column: unset;
+    justify-self: unset;
+  }
+
+  .controls {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .gameArea {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .gameCanvas {
+    width: 400px;
+    height: 480px;
+    grid-column: unset;
+  }
+
+  .rain {
+    height: 12px;
+    width: 1.5px;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(480px);
+    }
+  }
+
+  .bird {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .birdImage {
+    width: 100%;
+    height: 100%;
+  }
+
+  .scoreBox {
+    padding: 0.4rem 1rem;
+    grid-column: unset;
+    justify-self: unset;
+  }
+
+  .scoreBox h3 {
+    font-size: 0.7rem;
+  }
+
+  .scoreValue {
+    font-size: 1.2rem;
+  }
+
+  .startBox h2,
+  .gameOverBox h2,
+  .winBox h2 {
+    font-size: 1.5rem;
+  }
+
+  .house {
+    font-size: 6rem;
+    width: 100px;
+    height: 100px;
+  }
+
+  .winMessage {
+    padding: 1.5rem 2rem;
+  }
+
+  .winMessage h2 {
+    font-size: 1.5rem;
+  }
+
+  .winMessage p {
+    font-size: 0.9rem;
+  }
+
+  .finalScore {
+    font-size: 1.2rem;
+  }
+
+  .instruction {
+    font-size: 0.8rem;
+  }
+
+  .sadImage {
+    width: 150px;
+    height: 150px;
+  }
+
+  .controls {
+    font-size: 0.7rem;
+  }
+}

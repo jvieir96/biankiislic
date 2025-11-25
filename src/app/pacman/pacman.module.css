@@ -1,0 +1,543 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+}
+
+.gameWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.title {
+  font-family: 'Titan One', cursive;
+  font-size: 4rem;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0.3rem;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ffff00, #ffa500, #ffff00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 100%;
+  animation: rainbow 3s linear infinite, bounce 2s ease-in-out infinite;
+}
+
+.gameArea {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+.sidebar {
+  position: absolute;
+  top: 0;
+  left: -180px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.scoreBox {
+  background: var(--menu-bg);
+  border: 2px solid var(--accent-primary);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  min-width: 100px;
+  box-shadow: 0 3px 15px rgba(255, 107, 157, 0.3);
+}
+
+.scoreBox h3 {
+  font-family: 'Baloo 2', cursive;
+  color: var(--accent-secondary);
+  font-size: 0.75rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.05rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.scoreValue {
+  font-family: 'Titan One', cursive;
+  color: var(--foreground);
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.powerBox {
+  background: linear-gradient(145deg, #ffff00, #ffa500);
+  border: 2px solid #ffff00;
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  box-shadow: 0 3px 15px rgba(255, 255, 0, 0.5);
+  animation: pulse 0.5s ease-in-out infinite;
+}
+
+.powerBox h3 {
+  font-family: 'Titan One', cursive;
+  color: #000;
+  font-size: 0.7rem;
+  text-align: center;
+  margin: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.mazeContainer {
+  position: relative;
+  background: #000;
+  border: 4px solid var(--accent-primary);
+  border-radius: 20px;
+  padding: 1rem;
+  box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+}
+
+.maze {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #000;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+
+.row {
+  display: flex;
+  gap: 0;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wall {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: 2px solid #7dc05c;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.wall.wallRight {
+  border-right: none;
+}
+
+.wall.wallBottom {
+  border-bottom: none;
+}
+
+.wall.wallLeft {
+  border-left: none;
+}
+
+.wall.wallTop {
+  border-top: none;
+}
+
+.dot {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dot::before {
+  content: '📚';
+}
+
+.coffee {
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: blink 0.5s ease-in-out infinite;
+}
+
+.coffee::before {
+  content: '☕';
+}
+
+.mushroom {
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: blink 0.5s ease-in-out infinite;
+}
+
+.mushroom::before {
+  content: '🍄';
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.pacman {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.05s linear;
+  animation: slideIn 0.12s ease-out;
+  background-image: url('/study2.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+}
+
+.ghost {
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.05s ease-out;
+}
+
+.ghost::before {
+  content: '👻';
+}
+
+.ghost.step1 {
+  transform: translateY(-2px) scaleY(1.05);
+}
+
+.ghost.step2 {
+  transform: translateY(2px) scaleY(0.95);
+}
+
+.ghost.scared {
+  animation: shake 0.2s ease-in-out infinite;
+  filter: brightness(0.5);
+}
+
+.ghost.eaten {
+  animation: ghostEaten 0.5s ease-out forwards !important;
+  pointer-events: none;
+}
+
+.ghost.inactive {
+  opacity: 0.3;
+  filter: grayscale(0.5);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+
+@keyframes ghostEaten {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes ghostSpawn {
+  0% {
+    transform: scale(0) rotate(-360deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(-180deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.gameOverOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  z-index: 10;
+}
+
+.gameOverBox {
+  text-align: center;
+  padding: 2rem;
+  background: var(--menu-bg);
+  border: 4px solid var(--accent-primary);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(255, 107, 157, 0.5);
+}
+
+.gameOverBox h2 {
+  font-family: 'Titan One', cursive;
+  font-size: 3rem;
+  background: linear-gradient(90deg, #ffff00, #ffa500, #ff0000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  letter-spacing: 0.2rem;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+.sadImage {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 4px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.finalScore {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  color: var(--foreground);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.instruction {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1rem;
+  color: var(--accent-secondary);
+  margin: 0.5rem 0;
+  letter-spacing: 0.05rem;
+  font-weight: 600;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+.startOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  z-index: 10;
+  animation: fadeIn 0.5s ease;
+}
+
+.startBox {
+  text-align: center;
+  padding: 2rem;
+  background: var(--menu-bg);
+  border: 4px solid var(--accent-primary);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(255, 107, 157, 0.5);
+}
+
+.startBox h2 {
+  font-family: 'Titan One', cursive;
+  font-size: 3rem;
+  background: linear-gradient(90deg, #ffff00, #ffa500, #ffff00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  letter-spacing: 0.2rem;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.controls {
+  font-family: 'Baloo 2', cursive;
+  text-align: center;
+  color: var(--accent-secondary);
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
+  opacity: 0.8;
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+.controls p {
+  margin: 0.25rem 0;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+    letter-spacing: 0.3rem;
+  }
+
+  .gameArea {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .scoreBox {
+    min-width: 80px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .scoreBox h3 {
+    font-size: 0.65rem;
+  }
+
+  .scoreValue {
+    font-size: 1rem;
+  }
+
+  .powerBox {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .powerBox h3 {
+    font-size: 0.6rem;
+  }
+
+  .cell {
+    width: 18px;
+    height: 18px;
+  }
+
+  .pacman {
+    width: 16px;
+    height: 16px;
+  }
+
+  .ghost {
+    font-size: 16px;
+  }
+
+  .gameOverBox h2 {
+    font-size: 2rem;
+  }
+
+  .controls {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+    letter-spacing: 0.2rem;
+  }
+
+  .cell {
+    width: 14px;
+    height: 14px;
+  }
+
+  .pacman {
+    width: 14px;
+    height: 14px;
+  }
+
+  .ghost {
+    font-size: 12px;
+  }
+
+  .scoreBox {
+    min-width: 70px;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .scoreBox h3 {
+    font-size: 0.6rem;
+  }
+
+  .scoreValue {
+    font-size: 0.9rem;
+  }
+
+  .powerBox {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .powerBox h3 {
+    font-size: 0.55rem;
+  }
+
+  .gameOverBox {
+    padding: 1.5rem;
+  }
+
+  .gameOverBox h2 {
+    font-size: 1.5rem;
+  }
+
+  .finalScore {
+    font-size: 1.2rem;
+  }
+
+  .instruction {
+    font-size: 0.85rem;
+  }
+
+  .controls {
+    font-size: 0.7rem;
+  }
+}
