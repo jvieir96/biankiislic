@@ -157,7 +157,7 @@ export default function Tetris() {
     setScore(newScore);
 
     // Check if player won
-    if (newScore >= 600) {
+    if (newScore >= 1000) {
       setHasWon(true);
       setShowVictory(true);
       setGameOver(true);

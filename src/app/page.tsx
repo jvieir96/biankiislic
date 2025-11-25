@@ -181,8 +181,10 @@ export default function Home() {
               onClick={() => {
                 if (confirm('¿Estás seguro de que quieres resetear todo el progreso?')) {
                   localStorage.setItem('completedLevels', '0');
+                  localStorage.removeItem('introShown');
                   setCompletedLevels(0);
                   setSelectedIndex(0);
+                  setShowIntro(true);
                   setShowSettingsMenu(false);
                   alert('Progreso reseteado. Solo el primer nivel está desbloqueado.');
                 }

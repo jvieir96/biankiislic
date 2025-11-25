@@ -515,7 +515,7 @@ export default function RetroRacer() {
       ctx.fill();
 
       // Draw finish line when close to the end
-      const finishLineDistance = 100000;
+      const finishLineDistance = 150000;
       const finishLineZ = finishLineDistance - distance;
 
       // Draw finish line if this segment is at the finish line position
@@ -907,7 +907,7 @@ export default function RetroRacer() {
     setDistance(newDistance);
 
     // Check if reached finish line
-    if (newDistance >= 100000) {
+    if (newDistance >= 150000) {
       // Play victory sound
       if (!isMuted) {
         const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
