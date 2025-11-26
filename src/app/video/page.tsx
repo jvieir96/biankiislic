@@ -59,7 +59,7 @@ export default function VideoPage() {
         controls
         onEnded={handleVideoEnd}
       >
-        <source src="/videoo.mp4" type="video/mp4" />
+        <source src="/videolast.mp4" type="video/mp4" />
         Tu navegador no soporta el elemento de video.
       </video>
 
