@@ -55,7 +55,7 @@ export default function RetroRacer() {
   // Load car image
   useEffect(() => {
     const img = new Image();
-    img.src = '/car.png';
+    img.src = '/toyinetap2.png';
     img.onload = () => {
       carImageRef.current = img;
     };
@@ -290,56 +290,11 @@ export default function RetroRacer() {
     drawCloud(450 + Math.sin(cloudTime.current * 1.2) * 18, 40, 0.9); // Left-right faster
     drawCloud(550 - Math.sin(cloudTime.current * 0.6) * 10, 80, 0.7); // Right-left very slow
 
-    // Draw message on horizon that fades in gradually
-    const messageStartDistance = 3000; // Message starts appearing after 3000m
-    const messageFadeDuration = 8000; // Takes 8000m to fully appear
-    const messageOpacity = Math.min(1, Math.max(0, (distance - messageStartDistance) / messageFadeDuration));
-    if (messageOpacity > 0) {
-      // Message rises slowly from below as it fades in
-      const targetY = CANVAS_HEIGHT * 0.25;
-      const startY = CANVAS_HEIGHT * 0.40; // Starts lower
-      const currentY = startY + (targetY - startY) * messageOpacity; // Moves up as it fades in
-
-      const fontSize1 = 32;
-      const fontSize2 = 36;
-
-      const centerX = CANVAS_WIDTH / 2;
-
-      // Draw text with glow effect
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-
-      // Outer glow
-      ctx.shadowColor = `rgba(255, 105, 180, ${messageOpacity * 0.8})`;
-      ctx.shadowBlur = 20;
-
-      // First line - appears first
-      const line1Opacity = Math.min(1, messageOpacity * 1.3); // Appears slightly earlier
-      if (line1Opacity > 0) {
-        ctx.fillStyle = `rgba(255, 20, 147, ${line1Opacity})`;
-        ctx.font = `italic ${fontSize1}px "Brush Script MT", "Lucida Calligraphy", cursive`;
-        ctx.fillText('Felicidades psicóloga!', centerX, currentY - 25);
-      }
-
-      // Second line - appears after first line
-      const line2Opacity = Math.max(0, (messageOpacity - 0.3) * 1.4); // Appears with delay
-      if (line2Opacity > 0) {
-        ctx.fillStyle = `rgba(255, 0, 127, ${line2Opacity})`;
-        ctx.font = `bold italic ${fontSize2}px "Brush Script MT", "Lucida Calligraphy", cursive`;
-        ctx.shadowBlur = 25;
-        ctx.fillText('Te amo ❤', centerX, currentY + 20);
-      }
-
-      // Reset shadow
-      ctx.shadowBlur = 0;
-      ctx.shadowColor = 'transparent';
-    }
-
     let cumulativeCurve = 0;
 
     // Draw a solid road base where the player car is to prevent sky showing through
     // This ensures smooth color continuity regardless of segment gaps
-    ctx.fillStyle = '#6B6B6B';
+    ctx.fillStyle = '#7A7A7A';
     ctx.fillRect(0, CANVAS_HEIGHT * 0.75, CANVAS_WIDTH, CANVAS_HEIGHT * 0.25);
 
     // Draw road segments from far to near (back to front)
@@ -420,10 +375,10 @@ export default function RetroRacer() {
       let roadColor;
       if (relativeZ < 3000) {
         // Near the player, keep consistent color
-        roadColor = '#6B6B6B';
+        roadColor = '#7A7A7A';
       } else {
         // Far segments can alternate for depth perception
-        roadColor = Math.floor(segment.index / 3) % 2 === 0 ? '#6B6B6B' : '#4A4A4A';
+        roadColor = Math.floor(segment.index / 3) % 2 === 0 ? '#7A7A7A' : '#5A5A5A';
       }
       ctx.fillStyle = roadColor;
 
@@ -850,18 +805,16 @@ export default function RetroRacer() {
 
     // Draw player car using image - positioned on the road using perspective
     // Project the car's position onto the road at a fixed distance from camera
-    const carDistance = 100; // Distance from camera in 3D space (lower value = closer to camera = lower on screen)
+    const carDistance = 10; // Distance from camera in 3D space (lower value = closer to camera = lower on screen)
     const carProjected = project(0, 0, carDistance);
 
-    // Calculate car size based on perspective scale
-    const baseCarWidth = 180;
-    const carScale = carProjected.scale * 230; // Scale with perspective
-    const carWidth = Math.max(baseCarWidth, carScale);
-    const carHeight = carWidth * 0.75; // Maintain aspect ratio
+    // Calculate car size - fixed size for consistent appearance
+    const carWidth = 190;
+    const carHeight = carWidth * 1.5; // Maintain aspect ratio
 
     // Car is always centered horizontally on canvas
     const carX = CANVAS_WIDTH / 2;
-    const carY = carProjected.y;
+    const carY = CANVAS_HEIGHT - 5; // Fixed position near bottom of canvas
 
     // Draw car image if loaded (transparent background will be preserved)
     if (carImageRef.current) {
@@ -883,27 +836,27 @@ export default function RetroRacer() {
 
     // Speed control
     let newSpeed = speed;
-    if (accelPressed && speed < 300) {
-      newSpeed += 2; // Reduced from 5 to 2 for slower acceleration
+    if (accelPressed && speed < 250) {
+      newSpeed += 1.5; // Slightly more responsive acceleration
     } else if (brakePressed && speed > 0) {
-      newSpeed -= 8; // Reduced from 10 to 8 for smoother braking
+      newSpeed -= 6; // Smoother braking
     } else if (speed > 0) {
-      newSpeed -= 1; // Reduced from 2 to 1 for slower deceleration
+      newSpeed -= 0.8; // Slower deceleration
     }
-    newSpeed = Math.max(0, Math.min(300, newSpeed));
+    newSpeed = Math.max(0, Math.min(250, newSpeed));
     setSpeed(newSpeed);
 
     // Position control - full road width movement
     // Allow movement across almost the entire visible road
     if (leftPressed && playerX.current > -3.5) {
-      playerX.current -= 0.15;
+      playerX.current -= 0.12;
     }
     if (rightPressed && playerX.current < 3.5) {
-      playerX.current += 0.15;
+      playerX.current += 0.12;
     }
 
     // Update distance (move forward) - increased multiplier for faster movement
-    const newDistance = distance + newSpeed / 3;
+    const newDistance = distance + newSpeed / 4;
     setDistance(newDistance);
 
     // Check if reached finish line
