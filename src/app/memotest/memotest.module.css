@@ -40,6 +40,12 @@
   box-shadow: 0 5px 20px rgba(255, 107, 157, 0.3);
 }
 
+.scoreContent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .scoreBox h3 {
   font-family: 'Baloo 2', cursive;
   color: var(--accent-secondary);
@@ -56,6 +62,27 @@
   font-size: 1.3rem;
   font-weight: bold;
   text-align: center;
+}
+
+.musicButton {
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, #6c5ce7 0%, #00b894 100%);
+  border: 2px solid var(--accent-primary);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.musicButton:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.5);
+  background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+}
+
+.musicButton:active {
+  transform: scale(0.95);
 }
 
 .cardGrid {

@@ -8,6 +8,35 @@
   z-index: 1;
 }
 
+.musicControlButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6c5ce7 0%, #00b894 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.musicControlButton:hover {
+  transform: scale(1.15);
+  box-shadow: 0 8px 30px rgba(108, 92, 231, 0.6);
+  background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+}
+
+.musicControlButton:active {
+  transform: scale(0.95);
+}
+
 .settingsContainer {
   position: fixed;
   top: 20px;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from "./page.module.css";
 
@@ -20,6 +20,8 @@ export default function Home() {
   const [showIntro, setShowIntro] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const [minigamesMode, setMinigamesMode] = useState(false);
+  const menuMusicRef = useRef<HTMLAudioElement | null>(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
 
   useEffect(() => {
     // Load completed levels from localStorage
@@ -39,6 +41,43 @@ export default function Home() {
     if (!introShown) {
       setShowIntro(true);
     }
+  }, []);
+
+  // Initialize and play menu music
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !menuMusicRef.current) {
+      menuMusicRef.current = new Audio('/background.mp3');
+      menuMusicRef.current.loop = true;
+      menuMusicRef.current.volume = 0.1;
+
+      // Try to play the music
+      const playMusic = () => {
+        if (menuMusicRef.current) {
+          menuMusicRef.current.play()
+            .then(() => {
+              setIsMusicPlaying(true);
+              document.removeEventListener('click', playMusic);
+            })
+            .catch(error => {
+              console.log('Menu music autoplay prevented, waiting for user interaction:', error);
+              setIsMusicPlaying(false);
+            });
+        }
+      };
+
+      // Try autoplay first
+      playMusic();
+
+      // If autoplay fails, wait for user click
+      document.addEventListener('click', playMusic);
+    }
+
+    return () => {
+      if (menuMusicRef.current) {
+        menuMusicRef.current.pause();
+        menuMusicRef.current.currentTime = 0;
+      }
+    };
   }, []);
 
   // Ensure selectedIndex is always within unlocked levels (unless minigames mode is active)
@@ -110,6 +149,19 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedIndex, completedLevels, minigamesMode]);
 
+  const toggleMusic = () => {
+    if (!menuMusicRef.current) return;
+
+    if (isMusicPlaying) {
+      menuMusicRef.current.pause();
+      setIsMusicPlaying(false);
+    } else {
+      menuMusicRef.current.play()
+        .then(() => setIsMusicPlaying(true))
+        .catch(error => console.log('Music playback failed:', error));
+    }
+  };
+
   const handleMenuClick = (id: string) => {
     console.log(`Menu item clicked: ${id}`);
 
@@ -147,6 +199,15 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      {/* Music control button */}
+      <button
+        className={styles.musicControlButton}
+        onClick={toggleMusic}
+        title={isMusicPlaying ? 'Pausar música' : 'Reproducir música'}
+      >
+        {isMusicPlaying ? '🔇' : '🔊'}
+      </button>
+
       {/* Settings Menu Button */}
       <div className={styles.settingsContainer}>
         <button

@@ -78,6 +78,31 @@
   text-align: center;
 }
 
+.musicButton {
+  background: var(--menu-bg);
+  border: 3px solid var(--accent-primary);
+  border-radius: 12px;
+  padding: 1rem;
+  min-width: 100px;
+  box-shadow: 0 5px 20px rgba(255, 107, 157, 0.3);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.musicButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
+  border-color: var(--accent-secondary);
+}
+
+.musicButton:active {
+  transform: scale(0.95);
+}
+
 .boardContainer {
   position: relative;
   background: var(--menu-bg);

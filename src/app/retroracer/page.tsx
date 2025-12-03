@@ -51,6 +51,7 @@ export default function RetroRacer() {
   const carImageRef = useRef<HTMLImageElement | null>(null);
   const cloudTime = useRef(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const loseSoundRef = useRef<HTMLAudioElement | null>(null);
 
   // Load car image
   useEffect(() => {
@@ -60,6 +61,26 @@ export default function RetroRacer() {
       carImageRef.current = img;
     };
   }, []);
+
+  // Play lose sound when game over (not won)
+  useEffect(() => {
+    if (gameOver && !reachedFinish) {
+      if (typeof window !== 'undefined') {
+        loseSoundRef.current = new Audio('/lose.mp3');
+        loseSoundRef.current.volume = 0.5;
+        loseSoundRef.current.play().catch(error => {
+          console.log('Lose sound playback failed:', error);
+        });
+      }
+    }
+
+    return () => {
+      if (loseSoundRef.current) {
+        loseSoundRef.current.pause();
+        loseSoundRef.current.currentTime = 0;
+      }
+    };
+  }, [gameOver, reachedFinish]);
 
   // Setup dynamic racing music
   useEffect(() => {

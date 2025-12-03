@@ -64,6 +64,8 @@ export default function Pacman() {
   const [maze, setMaze] = useState<number[][]>(createMaze());
   const [pacman, setPacman] = useState<Position>({ x: 1, y: 1 });
   const pacmanRef = useRef<Position>({ x: 1, y: 1 });
+  const loseSoundRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [direction, setDirection] = useState<Position>({ x: 0, y: 0 });
   const [nextDirection, setNextDirection] = useState<Position>({ x: 0, y: 0 });
   const [ghosts, setGhosts] = useState<Ghost[]>([
@@ -94,6 +96,55 @@ export default function Pacman() {
   useEffect(() => {
     pacmanRef.current = pacman;
   }, [pacman]);
+
+  // Initialize audio on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !audioRef.current) {
+      audioRef.current = new Audio('/pacman.mp3');
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.3;
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
+  // Control music playback based on game state
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    if (!showDialog && gameStarted && !gameOver && !gameWon) {
+      audioRef.current.play().catch(error => {
+        console.log('Audio playback failed:', error);
+      });
+    } else {
+      audioRef.current.pause();
+    }
+  }, [showDialog, gameStarted, gameOver, gameWon]);
+
+  // Play lose sound when game over (not won)
+  useEffect(() => {
+    if (gameOver && !gameWon) {
+      if (typeof window !== 'undefined') {
+        loseSoundRef.current = new Audio('/lose.mp3');
+        loseSoundRef.current.volume = 0.5;
+        loseSoundRef.current.play().catch(error => {
+          console.log('Lose sound playback failed:', error);
+        });
+      }
+    }
+
+    return () => {
+      if (loseSoundRef.current) {
+        loseSoundRef.current.pause();
+        loseSoundRef.current.currentTime = 0;
+      }
+    };
+  }, [gameOver, gameWon]);
 
   // Progressive ghost activation when game starts
   useEffect(() => {

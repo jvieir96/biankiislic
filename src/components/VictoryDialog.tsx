@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styles from './VictoryDialog.module.css';
 
 interface VictoryDialogProps {
@@ -12,6 +12,25 @@ interface VictoryDialogProps {
 
 export default function VictoryDialog({ onContinue, nextGamePath, levelNumber }: VictoryDialogProps) {
   const router = useRouter();
+  const victorySoundRef = useRef<HTMLAudioElement | null>(null);
+
+  // Play victory sound when component mounts
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      victorySoundRef.current = new Audio('/claps.mp3');
+      victorySoundRef.current.volume = 0.5;
+      victorySoundRef.current.play().catch(error => {
+        console.log('Victory sound playback failed:', error);
+      });
+    }
+
+    return () => {
+      if (victorySoundRef.current) {
+        victorySoundRef.current.pause();
+        victorySoundRef.current.currentTime = 0;
+      }
+    };
+  }, []);
 
   // Update completedLevels in localStorage when victory dialog is shown
   useEffect(() => {

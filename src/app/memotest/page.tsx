@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import GameDialog from '@/components/GameDialog';
 import VictoryDialog from '@/components/VictoryDialog';
@@ -43,6 +43,50 @@ export default function Memotest() {
   const [isChecking, setIsChecking] = useState(false);
   const [gameWon, setGameWon] = useState(false);
   const [showVictory, setShowVictory] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+
+  // Initialize audio on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !audioRef.current) {
+      audioRef.current = new Audio('/memotest.mp3');
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.15;
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
+  // Control music playback based on game state
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    if (!showDialog && !gameWon && isMusicPlaying) {
+      audioRef.current.play().catch(error => {
+        console.log('Audio playback failed:', error);
+      });
+    } else {
+      audioRef.current.pause();
+    }
+  }, [showDialog, gameWon, isMusicPlaying]);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+
+    if (isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+    } else {
+      audioRef.current.play()
+        .then(() => setIsMusicPlaying(true))
+        .catch(error => console.log('Music playback failed:', error));
+    }
+  };
 
   useEffect(() => {
     if (flippedCards.length === 2) {
@@ -153,8 +197,19 @@ export default function Memotest() {
         <h1 className={styles.title}>MEMOTEST</h1>
 
         <div className={styles.scoreBox}>
-          <h3>MOVES</h3>
-          <p className={styles.scoreValue}>{moves}</p>
+          <div className={styles.scoreContent}>
+            <div>
+              <h3>MOVES</h3>
+              <p className={styles.scoreValue}>{moves}</p>
+            </div>
+            <button
+              onClick={toggleMusic}
+              className={styles.musicButton}
+              title={isMusicPlaying ? 'Pausar música' : 'Reproducir música'}
+            >
+              {isMusicPlaying ? '🔇' : '🔊'}
+            </button>
+          </div>
         </div>
 
         <div className={styles.cardGrid}>

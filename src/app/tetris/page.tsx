@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import GameDialog from '@/components/GameDialog';
 import VictoryDialog from '@/components/VictoryDialog';
@@ -55,6 +55,9 @@ export default function Tetris() {
   const [hasWon, setHasWon] = useState(false);
   const [isHardDropping, setIsHardDropping] = useState(false);
   const [showVictory, setShowVictory] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+  const loseSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const rotate = (matrix: number[][]) => {
     const rotated = matrix[0].map((_, i) => matrix.map(row => row[i]).reverse());
@@ -178,7 +181,7 @@ export default function Tetris() {
       setPosition(nextPosition);
       setRotation(0);
     }
-  }, [mergePiece, score, level]);
+  }, [mergePiece, score, level, checkCollision]);
 
   const moveDown = useCallback(() => {
     if (gameOver || isPaused) return;
@@ -190,7 +193,7 @@ export default function Tetris() {
     } else {
       lockPiece();
     }
-  }, [position, currentPiece, rotation, gameOver, isPaused, lockPiece]);
+  }, [position, currentPiece, rotation, gameOver, isPaused, lockPiece, checkCollision]);
 
   const moveHorizontal = (direction: number) => {
     if (gameOver || isPaused) return;
@@ -287,7 +290,20 @@ export default function Tetris() {
     };
 
     requestAnimationFrame(animate);
-  }, [gameOver, isPaused, isHardDropping, position, currentPiece, rotation, board, score, level]);
+  }, [gameOver, isPaused, isHardDropping, position, currentPiece, rotation, board, score, level, checkCollision]);
+
+  const toggleMusic = useCallback(() => {
+    if (!audioRef.current) return;
+
+    if (isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+    } else {
+      audioRef.current.play()
+        .then(() => setIsMusicPlaying(true))
+        .catch(error => console.log('Audio playback failed:', error));
+    }
+  }, [isMusicPlaying]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -338,12 +354,17 @@ export default function Tetris() {
         case 'Escape':
           router.push('/');
           break;
+        case 'm':
+        case 'M':
+          e.preventDefault();
+          toggleMusic();
+          break;
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [moveDown, gameOver, router, isPaused]);
+  }, [moveDown, gameOver, router, isPaused, toggleMusic]);
 
   useEffect(() => {
     if (gameOver || isPaused) return;
@@ -352,6 +373,65 @@ export default function Tetris() {
     const interval = setInterval(moveDown, speed);
     return () => clearInterval(interval);
   }, [moveDown, gameOver, isPaused, level]);
+
+  // Initialize audio on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !audioRef.current) {
+      audioRef.current = new Audio('/tetris.mp3');
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.3;
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
+  // Music control effect
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    // Control playback based on game state
+    if (!showDialog && !gameOver && !isPaused) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsMusicPlaying(true);
+          })
+          .catch(error => {
+            console.log('Audio playback prevented by browser:', error);
+            setIsMusicPlaying(false);
+          });
+      }
+    } else if (isPaused || gameOver) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+    }
+  }, [showDialog, gameOver, isPaused]);
+
+  // Play lose sound when game over (not won)
+  useEffect(() => {
+    if (gameOver && !hasWon) {
+      if (typeof window !== 'undefined') {
+        loseSoundRef.current = new Audio('/lose.mp3');
+        loseSoundRef.current.volume = 0.5;
+        loseSoundRef.current.play().catch(error => {
+          console.log('Lose sound playback failed:', error);
+        });
+      }
+    }
+
+    return () => {
+      if (loseSoundRef.current) {
+        loseSoundRef.current.pause();
+        loseSoundRef.current.currentTime = 0;
+      }
+    };
+  }, [gameOver, hasWon]);
 
   const renderBoard = () => {
     const displayBoard = board.map(row => [...row]);
@@ -405,6 +485,13 @@ export default function Tetris() {
               <h3>SCORE</h3>
               <p className={styles.scoreValue}>{score}</p>
             </div>
+            <button
+              onClick={toggleMusic}
+              className={styles.musicButton}
+              title={isMusicPlaying ? 'Pausar música' : 'Reproducir música'}
+            >
+              {isMusicPlaying ? '🔊' : '🔇'}
+            </button>
           </div>
 
           <div className={styles.boardContainer}>
@@ -457,7 +544,7 @@ export default function Tetris() {
 
         <div className={styles.controls}>
           <p>← → MOVE | ↑ / SPACE ROTATE | ↓ SOFT DROP | ENTER HARD DROP</p>
-          <p>P PAUSE | ESC MENU</p>
+          <p>P PAUSE | M MUSIC | ESC MENU</p>
         </div>
       </div>
     </div>

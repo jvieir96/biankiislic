@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import GameDialog from '@/components/GameDialog';
 import VictoryDialog from '@/components/VictoryDialog';
@@ -51,6 +51,50 @@ export default function Puzzle() {
   const [isComplete, setIsComplete] = useState(false);
   const [showVictory, setShowVictory] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+
+  // Initialize audio on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !audioRef.current) {
+      audioRef.current = new Audio('/puzzle.mp3');
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.3;
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
+  // Control music playback based on game state
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    if (!showDialog && !isComplete && isMusicPlaying) {
+      audioRef.current.play().catch(error => {
+        console.log('Audio playback failed:', error);
+      });
+    } else {
+      audioRef.current.pause();
+    }
+  }, [showDialog, isComplete, isMusicPlaying]);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+
+    if (isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+    } else {
+      audioRef.current.play()
+        .then(() => setIsMusicPlaying(true))
+        .catch(error => console.log('Music playback failed:', error));
+    }
+  };
 
   // Initialize with random image
   useEffect(() => {
@@ -318,6 +362,13 @@ export default function Puzzle() {
               title="Change image"
             >
               🖼️
+            </button>
+            <button
+              className={styles.iconButton}
+              onClick={toggleMusic}
+              title={isMusicPlaying ? 'Pausar música' : 'Reproducir música'}
+            >
+              {isMusicPlaying ? '🔇' : '🔊'}
             </button>
           </div>
         </div>
